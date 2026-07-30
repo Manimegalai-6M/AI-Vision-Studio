@@ -6,6 +6,7 @@ import plotly.express as px
 from utils.classifier import classify_image
 from utils.image_info import get_image_info
 from utils.translator import translate_label
+from components.uploader import image_uploader
 
 st.set_page_config(
     page_title="Image Classifier",
@@ -16,10 +17,7 @@ st.set_page_config(
 st.title("🖼️ AI Image Classifier")
 st.write("Upload an image and let AI identify what it contains.")
 
-uploaded_file = st.file_uploader(
-    "Choose an Image",
-    type=["jpg", "jpeg", "png"]
-)
+uploaded_file = image_uploader()
 
 if uploaded_file is not None:
 
