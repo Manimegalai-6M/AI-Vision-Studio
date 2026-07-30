@@ -1,16 +1,18 @@
 import streamlit as st
 from pathlib import Path
+from components.sidebar import show_sidebar
+from components.footer import show_footer
 
 # -----------------------------
 # PAGE CONFIG
 # -----------------------------
+
 st.set_page_config(
     page_title="AI Vision Studio",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
 # -----------------------------
 # LOAD CSS
 # -----------------------------
@@ -23,35 +25,7 @@ if css_file.exists():
 # -----------------------------
 # SIDEBAR
 # -----------------------------
-with st.sidebar:
-    st.title("🤖 AI Vision Studio")
-
-    st.markdown("---")
-
-    st.success("Professional AI Image Analysis Platform")
-
-    st.markdown("### Features")
-
-    st.markdown("""
-- 🖼 Image Classifier
-- 😊 Face Detection
-- 🎭 Emotion Detection
-- ✂ Background Removal
-- 🌱 Plant Doctor
-- 🍕 Food Nutrition
-- ♻ Recycling Assistant
-- 👕 Fashion Advisor
-- 🏡 Interior Designer
-- ✈ Travel Guide
-- 📖 Story Generator
-- 📝 Caption Generator
-- ♿ Accessibility Assistant
-- 📊 Image Quality
-""")
-
-    st.markdown("---")
-    st.info("Choose any page from the left navigation menu.")
-
+show_sidebar()
 # -----------------------------
 # HERO SECTION
 # -----------------------------
@@ -164,4 +138,4 @@ for module in modules:
 
 st.divider()
 
-st.caption("© 2026 AI Vision Studio | Built with Streamlit & Python")
+show_footer()
