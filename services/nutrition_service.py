@@ -1,4 +1,4 @@
-from utils.nutrition_database import FOOD_DATABASE
+from utils.nutrition import FOOD_DATABASE
 
 
 def get_nutrition(food_name):
