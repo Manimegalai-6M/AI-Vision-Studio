@@ -7,6 +7,7 @@ from utils.classifier import classify_image
 from utils.image_info import get_image_info
 from utils.translator import translate_label
 from components.uploader import image_uploader
+from components.image_card import show_image_card
 
 st.set_page_config(
     page_title="Image Classifier",
