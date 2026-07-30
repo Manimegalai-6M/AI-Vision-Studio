@@ -1,30 +1,21 @@
 from deep_translator import GoogleTranslator
 
-SUPPORTED_LANGUAGES = {
+LANGUAGE_CODES = {
+    "English": "en",
     "Tamil": "ta",
     "Hindi": "hi",
     "French": "fr",
     "Japanese": "ja"
 }
 
-def translate_label(text):
-    """
-    Translate a prediction label into multiple languages.
-    """
+def translate_label(text, language):
+    if language == "English":
+        return text
 
-    translations = {}
-
-    for language, code in SUPPORTED_LANGUAGES.items():
-
-        try:
-            translated = GoogleTranslator(
-                source="auto",
-                target=code
-            ).translate(text)
-
-            translations[language] = translated
-
-        except Exception:
-            translations[language] = "Translation Failed"
-
-    return translations
+    try:
+        return GoogleTranslator(
+            source="auto",
+            target=LANGUAGE_CODES[language]
+        ).translate(text)
+    except:
+        return text
