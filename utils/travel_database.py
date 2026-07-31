@@ -64,5 +64,28 @@ TRAVEL_DATABASE = {
             "Take the ferry.",
             "Arrive early."
         ]
+    },
+
+    "mosque": {
+        "Country": "Various Countries",
+        "City": "Various Cities",
+        "Rating": "4.6 ★★★★★",
+        "Description": "A mosque is a place of worship in Islam. Many famous mosques are also popular tourist attractions because of their architecture and history.",
+        "Best Time": "Year Round",
+        "Entry Fee": "Usually Free",
+        "Nearby": [
+            "Historic Market",
+            "Museum",
+            "Local Restaurants"
+        ],
+        "Food": [
+            "Traditional Local Cuisine",
+            "Street Food"
+        ],
+        "Tips": [
+            "Dress modestly.",
+            "Remove shoes before entering.",
+            "Respect prayer times."
+        ]
     }
 }

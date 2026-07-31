@@ -37,13 +37,30 @@ if uploaded_file is not None:
             top_k=5
         )
 
-    best_prediction = predictions[0]
+    travel_info = None
+    label = ""
+    confidence = 0
 
-    label = best_prediction["label"]
+    for prediction in predictions:
 
-    confidence = best_prediction["score"] * 100
+        travel_info = get_travel_information(
+            prediction["label"]
+        )
 
-    travel_info = get_travel_information(label)
+        if travel_info:
+
+            label = prediction["label"]
+
+            confidence = prediction["score"] * 100
+
+            break
+
+    # If no matching landmark is found
+    if not travel_info:
+
+        label = predictions[0]["label"]
+
+        confidence = predictions[0]["score"] * 100
 
     st.divider()
 

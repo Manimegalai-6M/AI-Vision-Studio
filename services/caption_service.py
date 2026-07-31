@@ -1,13 +1,30 @@
+import torch
+
 from models.caption_model import load_caption_model
 
 
 def generate_caption(image):
-    """
-    Generate a caption for the uploaded image.
-    """
 
-    model = load_caption_model()
+    processor, model = load_caption_model()
 
-    result = model(image)
 
-    return result[0]["generated_text"]
+    inputs = processor(
+        images=image,
+        return_tensors="pt"
+    )
+
+
+    output = model.generate(
+        **inputs,
+        max_length=50
+    )
+
+
+    caption = processor.decode(
+        output[0],
+        skip_special_tokens=True
+    )
+
+
+    return caption
+    return caption

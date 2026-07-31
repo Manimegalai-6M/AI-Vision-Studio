@@ -38,15 +38,32 @@ if uploaded_file is not None:
             top_k=5
         )
 
-    best_prediction = predictions[0]
+    room_info = None
+    label = ""
+    confidence = 0
 
-    label = best_prediction["label"]
+    for prediction in predictions:
 
-    confidence = best_prediction["score"] * 100
+        room_info = get_room_information(
+            prediction["label"]
+        )
+
+        if room_info:
+
+            label = prediction["label"]
+
+            confidence = prediction["score"] * 100
+
+            break
+
+    # If nothing matched, use the first prediction
+    if not room_info:
+
+        label = predictions[0]["label"]
+
+        confidence = predictions[0]["score"] * 100
 
     room_color = detect_room_color(image)
-
-    room_info = get_room_information(label)
 
     st.divider()
 

@@ -96,13 +96,19 @@ if uploaded_file is not None:
 
     if predictions:
         best_label = predictions[0]["label"]
-        translated = translate_label(best_label)
+
+        translated = translate_label(
+            best_label,
+            language
+        )
+
         df_translation = pd.DataFrame(
             {
-                "Language": translated.keys(),
-                "Translation": translated.values()
+                "Language": [language],
+                "Translation": [translated]
             }
         )
+
         st.dataframe(
             df_translation,
             use_container_width=True

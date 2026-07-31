@@ -72,5 +72,21 @@ INTERIOR_DATABASE = {
             "Motivational Frame"
         ]
     }
+    ,
+    "home theater": {
+        "Style": "Luxury Entertainment",
+        "Score": 9.6,
+        "Furniture": [
+            "Recliner Sofa",
+            "Projector Screen",
+            "Surround Speakers",
+            "Media Console"
+        ],
+        "Decor": [
+            "LED Strip Lights",
+            "Blackout Curtains",
+            "Acoustic Panels"
+        ]
+    }
 
 }

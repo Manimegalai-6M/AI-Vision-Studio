@@ -1,9 +1,17 @@
-from transformers import pipeline
 import streamlit as st
+
+from transformers import BlipProcessor, BlipForConditionalGeneration
+
 
 @st.cache_resource
 def load_caption_model():
-    return pipeline(
-        task="image-text-to-text",
-        model="Salesforce/blip-image-captioning-base"
+
+    processor = BlipProcessor.from_pretrained(
+        "Salesforce/blip-image-captioning-base"
     )
+
+    model = BlipForConditionalGeneration.from_pretrained(
+        "Salesforce/blip-image-captioning-base"
+    )
+
+    return processor, model
