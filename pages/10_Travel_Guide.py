@@ -64,11 +64,32 @@ if uploaded_file is not None:
 
     st.divider()
 
-    st.subheader("🏛️ Landmark Prediction")
+    st.subheader("🏛️ AI Landmark Prediction")
 
     st.success(f"**{label.title()}**")
 
     st.write(f"Confidence : **{confidence:.2f}%**")
+
+    st.info(
+        "If the AI prediction is incorrect, please select the correct landmark below."
+    )
+
+    selected_landmark = st.selectbox(
+        "🌍 Select Correct Landmark",
+        [
+            "AI Prediction",
+            "Taj Mahal",
+            "Eiffel Tower",
+            "Statue of Liberty"
+        ]
+    )
+
+    # Override AI prediction if user selects a landmark
+    if selected_landmark != "AI Prediction":
+
+        travel_info = get_travel_information(selected_landmark)
+
+        label = selected_landmark
 
     st.divider()
 
