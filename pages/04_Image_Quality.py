@@ -1,9 +1,8 @@
 import streamlit as st
+
 from PIL import Image
 
-from components.uploader import image_uploader
-from components.image_card import show_image_card
-from utils.image_quality import analyze_image_quality
+from services.quality_service import analyze_quality
 
 st.set_page_config(
     page_title="Image Quality",
@@ -13,68 +12,56 @@ st.set_page_config(
 
 st.title("📷 AI Image Quality Analyzer")
 
-st.write(
-    "Upload an image to evaluate its quality."
+uploaded = st.file_uploader(
+    "Upload Image",
+    type=["jpg", "jpeg", "png"]
 )
 
-uploaded_file = image_uploader()
+if uploaded:
 
-if uploaded_file:
+    image = Image.open(uploaded).convert("RGB")
 
-    image = Image.open(uploaded_file)
+    st.image(image, use_container_width=True)
 
-    show_image_card(
-        image,
-        uploaded_file
-    )
+    with st.spinner("Analyzing image..."):
 
-    if st.button("Analyze Quality"):
+        result = analyze_quality(image)
 
-        with st.spinner("Analyzing image..."):
+    st.divider()
 
-            result = analyze_image_quality(image)
+    col1, col2 = st.columns(2)
 
-        st.success("Analysis Completed!")
+    with col1:
 
-        col1, col2 = st.columns(2)
+        st.metric("Blur", result["Blur"])
 
-        with col1:
+        st.metric("Brightness", result["Brightness"])
 
-            st.metric(
-                "Blur",
-                result["Blur"]
-            )
+        st.metric("Contrast", result["Contrast"])
 
-            st.metric(
-                "Brightness",
-                result["Brightness"]
-            )
+    with col2:
 
-        with col2:
+        st.metric("Sharpness", result["Sharpness"])
 
-            st.metric(
-                "Contrast",
-                result["Contrast"]
-            )
+        st.metric("Overall Score", f"{result['Overall']}/100")
 
-            st.metric(
-                "Sharpness",
-                result["Sharpness"]
-            )
+    st.divider()
 
-        st.divider()
+    st.subheader("💡 Suggestions")
 
-        st.subheader("Overall Quality")
+    if result["Blur"] < 100:
+        st.warning("Image appears blurry.")
+    else:
+        st.success("Image is sharp.")
 
-        st.progress(min(result["Score"] / 100, 1.0))
+    if result["Brightness"] < 70:
+        st.warning("Increase brightness.")
+    elif result["Brightness"] > 190:
+        st.warning("Image is too bright.")
+    else:
+        st.success("Brightness is good.")
 
-        st.metric(
-            "Quality Score",
-            f"{result['Score']}/100"
-        )
-
-        st.success(result["Status"])
-
-else:
-
-    st.info("Upload an image to begin.")
+    if result["Contrast"] < 40:
+        st.warning("Low contrast.")
+    else:
+        st.success("Contrast is good.")
