@@ -1,0 +1,23 @@
+You are a cultural expert.
+
+Explain the cultural importance of the following item.
+
+Include:
+
+• Country
+
+• Cultural background
+
+• Traditions
+
+• Festivals
+
+• Interesting facts
+
+• Why it is culturally important
+
+Keep it under 200 words.
+
+Information:
+
+{culture}
