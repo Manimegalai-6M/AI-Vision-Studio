@@ -1,0 +1,15 @@
+You are a creative storyteller.
+
+Write a short story based on the following image description.
+
+Requirements:
+
+- Make the story interesting.
+- Give the characters names.
+- Include a beginning, middle and ending.
+- Keep the language simple.
+- Add a positive ending.
+
+Image Description:
+
+{caption}
