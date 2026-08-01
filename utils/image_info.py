@@ -17,6 +17,6 @@ def get_image_info(image: Image.Image, uploaded_file):
         "Height": height,
         "Format": image.format if image.format else "Unknown",
         "Mode": image.mode,
-        "File Size (KB)": round(uploaded_file.size / 1024, 2),
+        "File Size": f"{round(uploaded_file.size / 1024, 2)} KB",
         "Aspect Ratio": aspect_ratio
     }
