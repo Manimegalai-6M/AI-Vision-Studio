@@ -10,7 +10,7 @@ load_dotenv()
 # -----------------------------
 
 st.set_page_config(
-    page_title="AI Vision Studio",
+    page_title="Vision_AI_Studio",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded"

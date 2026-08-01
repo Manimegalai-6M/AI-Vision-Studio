@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 from groq import Groq
 from pathlib import Path
 
-# Load .env file
-load_dotenv()
+# Load .env file from the repository root.
+BASE_DIR = Path(__file__).resolve().parents[1]
+load_dotenv(BASE_DIR / ".env")
 
 
 @st.cache_resource
