@@ -1,56 +1,160 @@
 import streamlit as st
 from PIL import Image
-from io import BytesIO
 
-from services.object_counter_service import detect_objects
+from services.comparison_service import compare_image_data
+
+
+# --------------------------------------------------
+# PAGE CONFIG
+# --------------------------------------------------
 
 st.set_page_config(
-    page_title="AI Object Counter",
-    page_icon="🔢",
+    page_title="🆚 AI Image Comparison",
+    page_icon="🆚",
     layout="wide"
 )
 
-st.title("🔢 AI Object Counter")
+st.title("🆚 AI Image Comparison")
 
-uploaded = st.file_uploader(
-    "Upload Image",
-    type=["jpg", "jpeg", "png"]
+st.write(
+    "Upload two images to compare their predictions, "
+    "similarity score and image information."
 )
 
-if uploaded:
+st.divider()
 
-    image = Image.open(uploaded).convert("RGB")
+# --------------------------------------------------
+# IMAGE UPLOAD
+# --------------------------------------------------
 
-    with st.spinner("Detecting objects..."):
+col1, col2 = st.columns(2)
 
-        output, counts, total = detect_objects(image)
+with col1:
+    uploaded1 = st.file_uploader(
+        "📤 Upload Image 1",
+        type=["jpg", "jpeg", "png"],
+        key="image1"
+    )
+
+with col2:
+    uploaded2 = st.file_uploader(
+        "📤 Upload Image 2",
+        type=["jpg", "jpeg", "png"],
+        key="image2"
+    )
+
+# --------------------------------------------------
+# PROCESS
+# --------------------------------------------------
+
+if uploaded1 and uploaded2:
+
+    image1 = Image.open(uploaded1).convert("RGB")
+    image2 = Image.open(uploaded2).convert("RGB")
+
+    st.divider()
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Original")
-        st.image(image, use_container_width=True)
+        st.image(image1, caption="Image 1", use_container_width=True)
 
     with col2:
-        st.subheader("Detected Objects")
-        st.image(output, use_container_width=True)
+        st.image(image2, caption="Image 2", use_container_width=True)
+
+    with st.spinner("Comparing Images..."):
+
+        result = compare_image_data(
+            image1,
+            image2,
+            uploaded1,
+            uploaded2
+        )
 
     st.divider()
 
-    st.subheader("📊 Object Counts")
+    st.header("🏷 Prediction")
 
-    for name, count in counts.items():
-        st.metric(name.title(), count)
+    c1, c2 = st.columns(2)
 
-    st.metric("Total Objects", total)
+    with c1:
 
-    buffer = BytesIO()
+        st.metric(
+            "Image 1",
+            result["prediction1"]["label"],
+            f'{result["prediction1"]["confidence"]:.2f}%'
+        )
 
-    output.save(buffer, format="PNG")
+    with c2:
+
+        st.metric(
+            "Image 2",
+            result["prediction2"]["label"],
+            f'{result["prediction2"]["confidence"]:.2f}%'
+        )
+
+    st.divider()
+
+    st.header("📊 Similarity Scores")
+
+    a, b, c = st.columns(3)
+
+    with a:
+        st.metric(
+            "Histogram",
+            f'{result["similarity"]["histogram"]:.2f}%'
+        )
+
+    with b:
+        st.metric(
+            "SSIM",
+            f'{result["similarity"]["ssim"]:.2f}%'
+        )
+
+    with c:
+        st.metric(
+            "Average",
+            f'{result["similarity"]["average"]:.2f}%'
+        )
+
+    st.progress(result["similarity"]["average"] / 100)
+
+    st.divider()
+
+    st.header("🖼 Image Information")
+
+    left, right = st.columns(2)
+
+    with left:
+
+        info = result["info1"]
+
+        st.write(f"**Width:** {info['Width']}")
+        st.write(f"**Height:** {info['Height']}")
+        st.write(f"**Format:** {info['Format']}")
+        st.write(f"**File Size:** {info['File Size']}")
+
+    with right:
+
+        info = result["info2"]
+
+        st.write(f"**Width:** {info['Width']}")
+        st.write(f"**Height:** {info['Height']}")
+        st.write(f"**Format:** {info['Format']}")
+        st.write(f"**File Size:** {info['File Size']}")
+
+    st.divider()
+
+    st.header("🤖 AI Summary")
+
+    st.success(result["summary"])
 
     st.download_button(
-        "📥 Download Result",
-        buffer.getvalue(),
-        file_name="object_detection.png",
-        mime="image/png"
+        "📥 Download Report",
+        result["summary"],
+        file_name="comparison_report.txt"
     )
+
+else:
+
+    st.info("Upload two images to begin comparison.")

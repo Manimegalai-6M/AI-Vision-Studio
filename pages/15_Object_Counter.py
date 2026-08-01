@@ -1,159 +1,56 @@
 import streamlit as st
-
 from PIL import Image
 from io import BytesIO
 
-from gtts import gTTS
-
-from services.caption_service import generate_caption
-from services.accessibility_service import (
-    generate_accessibility_description
-)
-from services.translation_service import (
-    translate_predictions
-)
-
-# -------------------------------------------------------
+from services.object_counter_service import detect_objects
 
 st.set_page_config(
-    page_title="Accessibility Assistant",
-    page_icon="♿",
+    page_title="AI Object Counter",
+    page_icon="🔢",
     layout="wide"
 )
 
-st.title("♿ AI Accessibility Assistant")
+st.title("🔢 AI Object Counter")
 
 uploaded = st.file_uploader(
-    "Upload an Image",
+    "Upload Image",
     type=["jpg", "jpeg", "png"]
 )
-
-language = st.selectbox(
-
-    "🌍 Translate To",
-
-    [
-
-        "English",
-
-        "Tamil",
-
-        "Hindi",
-
-        "French",
-
-        "Japanese"
-
-    ]
-
-)
-
-# -------------------------------------------------------
 
 if uploaded:
 
     image = Image.open(uploaded).convert("RGB")
 
-    st.image(
-        image,
-        caption="Uploaded Image",
-        use_container_width=True
-    )
+    with st.spinner("Detecting objects..."):
 
-    with st.spinner("Generating caption..."):
+        output, counts, total = detect_objects(image)
 
-        caption = generate_caption(image)
+    col1, col2 = st.columns(2)
 
-    st.subheader("📝 Image Caption")
+    with col1:
+        st.subheader("Original")
+        st.image(image, use_container_width=True)
 
-    st.write(caption)
+    with col2:
+        st.subheader("Detected Objects")
+        st.image(output, use_container_width=True)
 
-    # ---------------------------------------------------
+    st.divider()
 
-    #
-    # Replace this later with your YOLO Object Counter
-    #
-    objects = [
-        "Person",
-        "Tree",
-        "Road"
-    ]
+    st.subheader("📊 Object Counts")
 
-    st.subheader("🔢 Detected Objects")
+    for name, count in counts.items():
+        st.metric(name.title(), count)
 
-    for obj in objects:
-        st.write("•", obj)
+    st.metric("Total Objects", total)
 
-    # ---------------------------------------------------
+    buffer = BytesIO()
 
-    with st.spinner("Creating accessibility description..."):
-
-        description = generate_accessibility_description(
-            caption,
-            objects
-        )
-
-    st.subheader("♿ Accessibility Description")
-
-    st.write(description)
-
-    # ---------------------------------------------------
-
-    translated = translate_predictions(
-        description,
-        language
-    )
-
-    st.subheader("🌍 Translated")
-
-    st.write(translated)
-
-    # ---------------------------------------------------
-
-    st.subheader("🔊 Audio")
-
-    lang_map = {
-
-        "English": "en",
-
-        "Tamil": "ta",
-
-        "Hindi": "hi",
-
-        "French": "fr",
-
-        "Japanese": "ja"
-
-    }
-
-    tts = gTTS(
-
-        text=translated,
-
-        lang=lang_map[language]
-
-    )
-
-    audio = BytesIO()
-
-    tts.write_to_fp(audio)
-
-    st.audio(audio.getvalue())
-
-    # ---------------------------------------------------
+    output.save(buffer, format="PNG")
 
     st.download_button(
-
-        "📥 Download Description",
-
-        data=translated,
-
-        file_name="accessibility_description.txt",
-
-        mime="text/plain"
-
+        "📥 Download Result",
+        buffer.getvalue(),
+        file_name="object_detection.png",
+        mime="image/png"
     )
-
-else:
-
-    st.info("Upload an image to begin.")

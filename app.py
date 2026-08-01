@@ -2,7 +2,9 @@ import streamlit as st
 from pathlib import Path
 from components.sidebar import show_sidebar
 from components.footer import show_footer
+from dotenv import load_dotenv
 
+load_dotenv()
 # -----------------------------
 # PAGE CONFIG
 # -----------------------------
@@ -16,11 +18,25 @@ st.set_page_config(
 # -----------------------------
 # LOAD CSS
 # -----------------------------
-css_file = Path("styles/style.css")
+css_root = Path("styles")
+css_file = css_root / "style.css"
 
 if css_file.exists():
-    with open(css_file) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    css_text = css_file.read_text()
+
+    # Inline any local @import rules from the styles directory.
+    inlined_css = []
+    for line in css_text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("@import url(") and stripped.endswith(");"):
+            import_path = stripped[len("@import url("):-2].strip().strip('"\'')
+            local_file = css_root / import_path
+            if local_file.exists():
+                inlined_css.append(local_file.read_text())
+                continue
+        inlined_css.append(line)
+
+    st.markdown(f"<style>{'\n'.join(inlined_css)}</style>", unsafe_allow_html=True)
 
 # -----------------------------
 # SIDEBAR
